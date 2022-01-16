@@ -16,6 +16,6 @@ go install github.com/swaggo/swag/cmd/swag@latest
 swag init
 go get -u github.com/swaggo/echo-swagger
 // MySql
-go get -u github.com/go-sql-driver/mysql
 go get -u gorm.io/gorm
+go get -u gorm.io/driver/mysql
 ```

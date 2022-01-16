@@ -7,6 +7,7 @@ import (
 	"github.com/swaggo/echo-swagger"
 	_ "github.com/swaggo/echo-swagger/example/docs"
 	mMiddleware "serverhealthcarepanel/middleware"
+	"serverhealthcarepanel/models"
 	"serverhealthcarepanel/routers"
 	"serverhealthcarepanel/utils"
 	"serverhealthcarepanel/utils/setting"
@@ -14,7 +15,7 @@ import (
 
 func init() {
 	setting.Setup()
-	//TODO something
+	models.Setup()
 }
 
 // @title Healthcare panel
@@ -29,6 +30,4 @@ func main() {
 	e.Use(middleware.Logger(), middleware.Recover(), mMiddleware.CORS())
 	routers.InitRouter(e)
 	e.Logger.Fatal(e.Start(":1323"))
-
-	setting.CloseDB()
 }

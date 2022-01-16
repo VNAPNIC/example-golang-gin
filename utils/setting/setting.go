@@ -2,7 +2,6 @@ package setting
 
 import (
 	"database/sql"
-	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"gopkg.in/ini.v1"
 	"log"
@@ -71,26 +70,6 @@ func Setup() {
 	ServerSetting.ReadTimeout = ServerSetting.ReadTimeout * time.Second
 	ServerSetting.WriteTimeout = ServerSetting.WriteTimeout * time.Second
 	RedisSetting.IdleTimeout = RedisSetting.IdleTimeout * time.Second
-
-	database, err = sql.Open("mysql", "roo:password@tcp(127.0.0.1:3306))/healthcare_panel?charset=utf8")
-	if err != nil {
-		panic(err)
-	}
-
-	database.SetConnMaxLifetime(time.Minute * 3)
-	database.SetMaxOpenConns(10)
-	database.SetMaxIdleConns(10)
-
-	fmt.Println("open  mysql  successfully!")
-}
-
-func CloseDB() {
-	defer func(database *sql.DB) {
-		err := database.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(database)
 }
 
 // mapTo map section
