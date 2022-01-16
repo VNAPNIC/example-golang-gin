@@ -1,0 +1,92 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Healthcare panel",
+        "contact": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/login": {
+            "post": {
+                "description": "User Login",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "User Login",
+                "parameters": [
+                    {
+                        "description": "user login",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/services.AuthStruct"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Struct"
+                        }
+                    },
+                    "400": {
+                        "description": "wrong request parameter",
+                        "schema": {
+                            "$ref": "#/definitions/response.Struct"
+                        }
+                    },
+                    "401": {
+                        "description": "The corresponding username or password is incorrect",
+                        "schema": {
+                            "$ref": "#/definitions/response.Struct"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "response.Struct": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "message": {
+                    "type": "string"
+                },
+                "time_stamp": {
+                    "type": "integer"
+                }
+            }
+        },
+        "services.AuthStruct": {
+            "type": "object",
+            "required": [
+                "password",
+                "user_name"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "maxLength": 20,
+                    "minLength": 6
+                },
+                "user_name": {
+                    "type": "string",
+                    "maxLength": 20,
+                    "minLength": 6
+                }
+            }
+        }
+    }
+}

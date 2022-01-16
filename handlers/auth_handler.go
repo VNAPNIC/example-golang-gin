@@ -11,12 +11,14 @@ import (
 
 // UserLogin
 // @Summary User Login
-// @Description User login
+// @Description User Login
 // @Accept json
 // @Produce json
 // @Tags Auth
 // @Param payload body services.AuthStruct true "user login"
-// @Success 200 {object}
+// @Success 200 {object} response.Struct
+// @Failure 400 {object} response.Struct "wrong request parameter"
+// @Failure 401 {object} response.Struct "The corresponding username or password is incorrect"
 // @Router /login [post]
 func UserLogin(ctx echo.Context) error {
 	userLogin := new(services.AuthStruct)

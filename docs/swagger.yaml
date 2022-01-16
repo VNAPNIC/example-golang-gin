@@ -1,0 +1,61 @@
+definitions:
+  response.Struct:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+      time_stamp:
+        type: integer
+    type: object
+  services.AuthStruct:
+    properties:
+      password:
+        maxLength: 20
+        minLength: 6
+        type: string
+      user_name:
+        maxLength: 20
+        minLength: 6
+        type: string
+    required:
+    - password
+    - user_name
+    type: object
+info:
+  contact: {}
+  title: Healthcare panel
+  version: "1.0"
+paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: User Login
+      parameters:
+      - description: user login
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/services.AuthStruct'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Struct'
+        "400":
+          description: wrong request parameter
+          schema:
+            $ref: '#/definitions/response.Struct'
+        "401":
+          description: The corresponding username or password is incorrect
+          schema:
+            $ref: '#/definitions/response.Struct'
+      summary: User Login
+      tags:
+      - Auth
+swagger: "2.0"
