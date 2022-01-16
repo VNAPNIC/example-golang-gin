@@ -7,7 +7,7 @@ import (
 	"github.com/swaggo/echo-swagger"
 	_ "github.com/swaggo/echo-swagger/example/docs"
 	mMiddleware "serverhealthcarepanel/middleware"
-	"serverhealthcarepanel/models"
+	model "serverhealthcarepanel/models"
 	"serverhealthcarepanel/routers"
 	"serverhealthcarepanel/utils"
 	"serverhealthcarepanel/utils/setting"
@@ -15,7 +15,7 @@ import (
 
 func init() {
 	setting.Setup()
-	models.Setup()
+	model.Setup()
 }
 
 // @title Healthcare panel

@@ -1,10 +1,10 @@
-package handlers
+package authHalder
 
 import (
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"serverhealthcarepanel/dto"
-	"serverhealthcarepanel/services"
+	"serverhealthcarepanel/services/user"
 	"serverhealthcarepanel/utils/code"
 	"serverhealthcarepanel/utils/response"
 )
@@ -21,18 +21,18 @@ import (
 // @Failure 401 {object} response.Struct "The corresponding username or password is incorrect"
 // @Router /login [post]
 func UserLogin(ctx echo.Context) error {
-	userLogin := new(services.AuthStruct)
+	userLogin := new(user.AuthStruct)
 
-	if err := ctx.Bind(userLogin); err != nil {
-		return response.Response(ctx, http.StatusBadRequest, code.InvalidParams, err.Error(), nil)
+	if err := ctx.Bind(&userLogin); err != nil {
+		return response.Error(ctx, http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err)
 	}
 
-	if err := ctx.Validate(userLogin); err != nil {
-		return response.Response(ctx, http.StatusBadRequest, code.InvalidParams, err.Error(), nil)
+	if err := ctx.Validate(&userLogin); err != nil {
+		return response.Error(ctx, http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err)
 	}
 
 	if userLogin.Username != "hainam" || userLogin.Password != "hainam" {
-		return response.Response(ctx, http.StatusUnauthorized, code.ErrorUserPasswordInvalid, code.GetMsg(code.ErrorUserPasswordInvalid), nil)
+		return response.Error(ctx, http.StatusUnauthorized, code.ErrorUserPasswordInvalid, code.GetMsg(code.ErrorUserPasswordInvalid), nil)
 	}
 
 	return response.Success(ctx, dto.UserDto{

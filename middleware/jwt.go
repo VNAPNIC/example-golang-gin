@@ -51,7 +51,7 @@ func JWTHandler() echo.MiddlewareFunc {
 			//}
 
 			if rCode != code.SUCCESS {
-				return response.Response(ctx,
+				return response.Error(ctx,
 					http.StatusUnauthorized,
 					rCode,
 					code.GetMsg(rCode),

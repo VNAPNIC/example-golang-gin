@@ -3,13 +3,14 @@ package routers
 import (
 	"github.com/labstack/echo/v4"
 	"net/http"
-	"serverhealthcarepanel/handlers"
-	"serverhealthcarepanel/middleware"
+	authHalder "serverhealthcarepanel/handlers/auth"
+	userHalder "serverhealthcarepanel/handlers/user"
 )
 
 func InitUserRouter(Router *echo.Group) {
-	Router.POST("/login", handlers.UserLogin)
-	user := Router.Group("/user", middleware.JWTHandler())
+	Router.POST("/login", authHalder.UserLogin)
+	user := Router.Group("/user") // , middleware.JWTHandler()
+	user.POST("", userHalder.CreateUser)
 	user.GET("", getUsers)
 }
 

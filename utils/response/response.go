@@ -19,7 +19,7 @@ type Struct struct {
 	Data      interface{} `json:"data"`
 }
 
-func Response(ctx echo.Context, httpCode, errorCode int, msg string, data interface{}) error {
+func Error(ctx echo.Context, httpCode, errorCode int, msg string, data interface{}) error {
 	return ctx.JSON(httpCode, Struct{
 		Code:    errorCode,
 		Message: msg,
