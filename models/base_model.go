@@ -3,10 +3,12 @@ package model
 import (
 	"database/sql"
 	"fmt"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 	"serverhealthcarepanel/utils/setting"
 	"time"
+
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 var (
@@ -20,7 +22,13 @@ type JSONTime struct {
 }
 
 type BaseModel struct {
-	ID        uint     `gorm:"autoIncrement;primary_key" json:"id"`
+	ID        uint     `gorm:"primary_key" json:"id"`
+	CreatedAt JSONTime `gorm:"type:timestamp;default:current_timestamp" json:"created_at"`
+	UpdatedAt JSONTime `gorm:"type:timestamp;default:current_timestamp" json:"updated_at"`
+	DeletedAt JSONTime `gorm:"type:timestamp;default:current_timestamp" json:"deleted_at"`
+}
+
+type BaseModelNoId struct {
 	CreatedAt JSONTime `gorm:"type:timestamp;default:current_timestamp" json:"created_at"`
 	UpdatedAt JSONTime `gorm:"type:timestamp;default:current_timestamp" json:"updated_at"`
 	DeletedAt JSONTime `gorm:"type:timestamp;default:current_timestamp" json:"deleted_at"`
@@ -38,10 +46,12 @@ func Setup() {
 
 	db, err = gorm.Open(mysql.New(mysql.Config{
 		Conn: database,
-	}), &gorm.Config{})
+	}), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Silent),
+	})
 
-	if db == nil {
-		return
+	if err != nil {
+		panic(err)
 	}
 
 	/*    gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
@@ -49,7 +59,7 @@ func Setup() {
 	  }*/
 	TablePrefix = setting.DatabaseSetting.TablePrefix
 
-	err = db.AutoMigrate(&Auth{}, &Role{})
+	err = db.Debug().AutoMigrate(&Auth{}, &Role{})
 	if err != nil {
 		panic(err)
 	}

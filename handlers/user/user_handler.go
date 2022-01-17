@@ -1,11 +1,12 @@
 package userHalder
 
 import (
-	"github.com/labstack/echo/v4"
 	"net/http"
 	"serverhealthcarepanel/services/user"
 	"serverhealthcarepanel/utils/code"
 	"serverhealthcarepanel/utils/response"
+
+	"github.com/labstack/echo/v4"
 )
 
 // CreateUser
@@ -24,15 +25,15 @@ func CreateUser(ctx echo.Context) error {
 	newUser := new(user.AddUserStruct)
 
 	if err := ctx.Bind(&newUser); err != nil {
-		return response.Error(ctx, http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err)
+		return response.Error(ctx, http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err.Error())
 	}
 
-	if err := ctx.Validate(&newUser); err != nil {
-		return response.Error(ctx, http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err)
+	if err := ctx.Validate(*newUser); err != nil {
+		return response.Error(ctx, http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err.Error())
 	}
 
 	if err := user.CreateUser(newUser); err != nil {
-		return response.Error(ctx, http.StatusInternalServerError, code.ErrorFailedAddNewUser, code.GetMsg(code.ErrorFailedAddNewUser), err)
+		return response.Error(ctx, http.StatusInternalServerError, code.ErrorFailedAddNewUser, code.GetMsg(code.ErrorFailedAddNewUser), err.Error())
 	}
 
 	return response.Success(ctx, nil)

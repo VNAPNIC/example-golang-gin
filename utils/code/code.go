@@ -15,6 +15,7 @@ const (
 	AuthTokenInBlockList        = 20006
 	ErrorUserOldPasswordInvalid = 20007
 	ErrorFailedAddNewUser       = 20008
+	ErrorFailedAddNewRole       = 20009
 )
 
 var MsgFlags = map[int]string{
@@ -31,6 +32,7 @@ var MsgFlags = map[int]string{
 	AuthTokenInBlockList:        "The Token already exists in blockList",
 	ErrorUserOldPasswordInvalid: "The corresponding user's original password is incorrect",
 	ErrorFailedAddNewUser:       "Failed to add new user",
+	ErrorFailedAddNewRole:       "Failed to add new role",
 }
 
 // GetMsg get error information based on Code

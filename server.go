@@ -1,16 +1,17 @@
 package main
 
 import (
-	"github.com/go-playground/validator"
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
-	"github.com/swaggo/echo-swagger"
-	_ "github.com/swaggo/echo-swagger/example/docs"
 	mMiddleware "serverhealthcarepanel/middleware"
 	model "serverhealthcarepanel/models"
 	"serverhealthcarepanel/routers"
 	"serverhealthcarepanel/utils"
 	"serverhealthcarepanel/utils/setting"
+
+	"github.com/go-playground/validator"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	echoSwagger "github.com/swaggo/echo-swagger"
+	_ "github.com/swaggo/echo-swagger/example/docs"
 )
 
 func init() {

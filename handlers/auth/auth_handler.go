@@ -24,11 +24,11 @@ func UserLogin(ctx echo.Context) error {
 	userLogin := new(user.AuthStruct)
 
 	if err := ctx.Bind(&userLogin); err != nil {
-		return response.Error(ctx, http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err)
+		return response.Error(ctx, http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err.Error())
 	}
 
 	if err := ctx.Validate(&userLogin); err != nil {
-		return response.Error(ctx, http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err)
+		return response.Error(ctx, http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err.Error())
 	}
 
 	if userLogin.Username != "hainam" || userLogin.Password != "hainam" {

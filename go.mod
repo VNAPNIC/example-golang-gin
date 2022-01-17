@@ -10,6 +10,7 @@ require (
 	github.com/swaggo/echo-swagger v1.1.4
 	github.com/swaggo/swag v1.7.8
 	gopkg.in/ini.v1 v1.66.2
+	gorm.io/driver/mysql v1.2.3
 	gorm.io/gorm v1.22.5
 )
 
@@ -42,5 +43,4 @@ require (
 	golang.org/x/tools v0.1.8 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gorm.io/driver/mysql v1.2.3 // indirect
 )
