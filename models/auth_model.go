@@ -12,7 +12,11 @@ type Auth struct {
 	Password   string   `gorm:"Size:50;NOT NULL;" json:"-"`
 	RoleName   string   `gorm:"-" json:"role_name"`
 	LoggedInAt JSONTime `gorm:"type:timestamp;default:current_timestamp" json:"logged_in_at"`
-	Role       Role     `gorm:"foreignKey:RoleId;association_foreignkey:RoleId" json:"-"`
+	Role       Role     `gorm:"foreignKey:RoleId;references:RoleId" json:"-"`
+}
+
+func (Auth) TableName() string {
+	return TablePrefix + "auth"
 }
 
 func CreateUser(auth Auth) error {
