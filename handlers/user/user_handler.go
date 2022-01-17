@@ -2,7 +2,7 @@ package userHalder
 
 import (
 	"net/http"
-	"serverhealthcarepanel/services/user"
+	userService "serverhealthcarepanel/services/user"
 	"serverhealthcarepanel/utils/code"
 	"serverhealthcarepanel/utils/response"
 
@@ -22,7 +22,7 @@ import (
 // @Failure 500 {object} response.Struct
 // @Router /user [post]
 func CreateUser(ctx echo.Context) error {
-	newUser := new(user.AddUserStruct)
+	newUser := new(userService.AddUserStruct)
 
 	if err := ctx.Bind(&newUser); err != nil {
 		return response.Error(ctx, http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err.Error())
@@ -32,7 +32,7 @@ func CreateUser(ctx echo.Context) error {
 		return response.Error(ctx, http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err.Error())
 	}
 
-	if err := user.CreateUser(newUser); err != nil {
+	if err := userService.CreateUser(newUser); err != nil {
 		return response.Error(ctx, http.StatusInternalServerError, code.ErrorFailedAddNewUser, code.GetMsg(code.ErrorFailedAddNewUser), err.Error())
 	}
 

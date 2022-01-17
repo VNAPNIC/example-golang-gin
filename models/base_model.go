@@ -22,7 +22,7 @@ type JSONTime struct {
 }
 
 type BaseModel struct {
-	ID        uint     `gorm:"primary_key" json:"id"`
+	ID        int      `gorm:"primary_key" json:"id"`
 	CreatedAt JSONTime `gorm:"type:timestamp;default:current_timestamp" json:"created_at"`
 	UpdatedAt JSONTime `gorm:"type:timestamp;default:current_timestamp" json:"updated_at"`
 	DeletedAt JSONTime `gorm:"type:timestamp;default:current_timestamp" json:"deleted_at"`

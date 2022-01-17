@@ -5,7 +5,7 @@ import (
 )
 
 type Role struct {
-	RoleId    uint     `gorm:"NOT NULL;primary_key;"` // role coding
+	RoleId    int      `gorm:"NOT NULL;primary_key;" json:"role_id"` // role coding
 	CreatedAt JSONTime `gorm:"type:timestamp;default:current_timestamp" json:"created_at"`
 	UpdatedAt JSONTime `gorm:"type:timestamp;default:current_timestamp" json:"updated_at"`
 	DeletedAt JSONTime `gorm:"type:timestamp;default:current_timestamp" json:"deleted_at"`

@@ -1,4 +1,4 @@
-package user
+package userService
 
 import (
 	model "serverhealthcarepanel/models"
@@ -17,6 +17,10 @@ type (
 		RoleId int `json:"role_id" validate:"omitempty,numeric,min=0"`
 	}
 )
+
+func CheckAuth(auth *AuthStruct) (error, bool, model.Auth) {
+	return model.CheckAuth(auth.Username, auth.Password)
+}
 
 func CreateUser(newUser *AddUserStruct) error {
 	return model.CreateUser(model.Auth{

@@ -1,6 +1,8 @@
 package model
 
 import (
+	"serverhealthcarepanel/utils"
+
 	_ "gorm.io/gorm"
 )
 
@@ -10,7 +12,6 @@ type Auth struct {
 	Status     int      `gorm:"type:int(1);DEFAULT:0;NOT NULL;" json:"status"`
 	Username   string   `gorm:"Size:20;uniqueIndex;NOT NULL;" json:"user_name"`
 	Password   string   `gorm:"Size:50;NOT NULL;" json:"-"`
-	RoleName   string   `gorm:"-" json:"role_name"`
 	LoggedInAt JSONTime `gorm:"type:timestamp;default:current_timestamp" json:"logged_in_at"`
 	Role       Role     `gorm:"references:RoleId"`
 }
@@ -25,4 +26,23 @@ func CreateUser(auth Auth) error {
 		return err
 	}
 	return nil
+}
+
+func CheckAuth(username string, password string) (error, bool, Auth) {
+	var auth Auth
+
+	res := db.Select([]string{"id"}).Where(Auth{
+		Username: username,
+		Password: utils.EncodeUserPassword(password),
+	}).Preload("Role").First(&auth)
+
+	if err := res.Error; err != nil {
+		return err, false, Auth{}
+	}
+
+	if auth.ID > 0 {
+		return nil, false, Auth{}
+	}
+
+	return nil, true, auth
 }
