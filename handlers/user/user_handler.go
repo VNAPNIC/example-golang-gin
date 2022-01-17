@@ -1,8 +1,9 @@
-package userHalder
+package userHandler
 
 import (
 	"net/http"
-	userService "serverhealthcarepanel/services/user"
+	"serverhealthcarepanel/dto"
+	"serverhealthcarepanel/services/user"
 	"serverhealthcarepanel/utils/code"
 	"serverhealthcarepanel/utils/response"
 
@@ -16,13 +17,13 @@ import (
 // @Produce json
 // @Security ApiKeyAuth
 // @Tags User
-// @Param payload body userService.AddUserStruct true "create new user"
+// @Param payload body dto.AddUser true "create new user"
 // @Success 200 {object} response.Struct
 // @Failure 400 {object} response.Struct "wrong request parameter"
 // @Failure 500 {object} response.Struct
 // @Router /user [post]
 func CreateUser(ctx echo.Context) error {
-	newUser := new(userService.AddUserStruct)
+	newUser := new(dto.AddUser)
 
 	if err := ctx.Bind(&newUser); err != nil {
 		return response.Error(ctx, http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err.Error())

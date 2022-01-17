@@ -22,20 +22,18 @@ type JSONTime struct {
 }
 
 type BaseModel struct {
-	ID        int      `gorm:"primary_key" json:"id"`
-	CreatedAt JSONTime `gorm:"type:timestamp;default:current_timestamp" json:"created_at"`
-	UpdatedAt JSONTime `gorm:"type:timestamp;default:current_timestamp" json:"updated_at"`
-	DeletedAt JSONTime `gorm:"type:timestamp;default:current_timestamp" json:"deleted_at"`
+	ID uint `gorm:"primary_key" json:"id"`
+	BaseModelTime
 }
 
-type BaseModelNoId struct {
-	CreatedAt JSONTime `gorm:"type:timestamp;default:current_timestamp" json:"created_at"`
-	UpdatedAt JSONTime `gorm:"type:timestamp;default:current_timestamp" json:"updated_at"`
-	DeletedAt JSONTime `gorm:"type:timestamp;default:current_timestamp" json:"deleted_at"`
+type BaseModelTime struct {
+	CreatedAt time.Time `gorm:"type:datetime" json:"created_at"`
+	UpdatedAt time.Time `gorm:"type:datetime" json:"updated_at"`
+	DeletedAt time.Time `gorm:"type:datetime" json:"deleted_at"`
 }
 
 func Setup() {
-	database, err := sql.Open("mysql", "root:@tcp(127.0.0.1:3306)/healthcare_panel?charset=utf8")
+	database, err := sql.Open("mysql", "root:@tcp(127.0.0.1:3306)/healthcare_panel?charset=utf8&parseTime=True")
 	if err != nil {
 		panic(err)
 	}

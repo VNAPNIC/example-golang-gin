@@ -1,9 +1,10 @@
-package authHalder
+package authHandler
 
 import (
 	"net/http"
 	"serverhealthcarepanel/dto"
-	userService "serverhealthcarepanel/services/user"
+	"serverhealthcarepanel/services/user"
+	"serverhealthcarepanel/utils"
 	"serverhealthcarepanel/utils/code"
 	"serverhealthcarepanel/utils/response"
 
@@ -16,13 +17,13 @@ import (
 // @Accept json
 // @Produce json
 // @Tags Auth
-// @Param payload body services.AuthStruct true "user login"
+// @Param payload body dto.Auth true "user login"
 // @Success 200 {object} response.Struct
 // @Failure 400 {object} response.Struct "wrong request parameter"
 // @Failure 401 {object} response.Struct "The corresponding username or password is incorrect"
 // @Router /login [post]
 func UserLogin(ctx echo.Context) error {
-	auth := new(userService.AuthStruct)
+	auth := new(dto.Auth)
 
 	if err := ctx.Bind(&auth); err != nil {
 		return response.Error(ctx, http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err.Error())
@@ -32,26 +33,34 @@ func UserLogin(ctx echo.Context) error {
 		return response.Error(ctx, http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err.Error())
 	}
 
-	var err, isExist, user = userService.CheckAuth(auth)
+	RError, isExist, user := userService.CheckAuth(auth)
 
-	if err != nil {
-		return response.Error(ctx, http.StatusInternalServerError, code.ErrorUserPasswordInvalid, code.GetMsg(code.ErrorUserPasswordInvalid), err.Error())
-	}
+	RCode := code.ErrorUserPasswordInvalid
 
-	if !isExist {
-		return response.Error(ctx, http.StatusUnauthorized, code.ErrorUserPasswordInvalid, code.GetMsg(code.ErrorUserPasswordInvalid), nil)
-	}
-
-	return response.Success(ctx, dto.UserDto{
-		ID:       user.ID,
-		UserName: user.Username,
-		Status:   user.Status,
-		Role: dto.RoleDto{
-			RoleId:   user.Role.RoleId,
-			RoleName: user.Role.RoleName,
-			IsAdmin:  user.Role.IsAdmin,
+	if isExist {
+		token, err := utils.GenerateToken(utils.Claims{
+			UserId:   user.ID,
+			Username: user.Username,
 			RoleKey:  user.Role.RoleKey,
-		},
-		Token: "aaaaaaaaaaasssssssaaa",
-	})
+			IsAdmin:  user.Role.IsAdmin,
+		})
+
+		if err != nil {
+			RError = err
+			RCode = code.ErrorAuthToken
+		} else {
+			// set login time
+			userService.SetLoggedTime(user.ID)
+			return response.Success(ctx, map[string]string{"token": token})
+		}
+
+	}
+
+	return response.Error(
+		ctx,
+		http.StatusUnauthorized,
+		RCode,
+		code.GetMsg(RCode),
+		utils.DetectError(RError),
+	)
 }

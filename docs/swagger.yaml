@@ -1,4 +1,49 @@
 definitions:
+  dto.AddUser:
+    properties:
+      password:
+        maxLength: 20
+        minLength: 4
+        type: string
+      role_id:
+        minimum: 0
+        type: integer
+      user_name:
+        maxLength: 20
+        minLength: 4
+        type: string
+    required:
+    - password
+    - user_name
+    type: object
+  dto.Auth:
+    properties:
+      password:
+        maxLength: 20
+        minLength: 4
+        type: string
+      user_name:
+        maxLength: 20
+        minLength: 4
+        type: string
+    required:
+    - password
+    - user_name
+    type: object
+  dto.CreateRole:
+    properties:
+      is_admin:
+        type: boolean
+      role_key:
+        type: string
+      role_name:
+        type: string
+    type: object
+  response.JSONTime:
+    properties:
+      time.Time:
+        type: string
+    type: object
   response.Struct:
     properties:
       code:
@@ -6,22 +51,8 @@ definitions:
       data: {}
       message:
         type: string
-      time_stamp:
-        type: integer
-    type: object
-  services.AuthStruct:
-    properties:
-      password:
-        maxLength: 20
-        minLength: 6
-        type: string
-      user_name:
-        maxLength: 20
-        minLength: 6
-        type: string
-    required:
-    - password
-    - user_name
+      time:
+        $ref: '#/definitions/response.JSONTime'
     type: object
 info:
   contact: {}
@@ -39,7 +70,7 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/services.AuthStruct'
+          $ref: '#/definitions/dto.Auth'
       produces:
       - application/json
       responses:
@@ -58,4 +89,67 @@ paths:
       summary: User Login
       tags:
       - Auth
+  /role:
+    post:
+      consumes:
+      - application/json
+      description: Create role
+      parameters:
+      - description: role_id
+        in: path
+        name: role_id
+        required: true
+        type: integer
+      - description: "YES"
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateRole'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Struct'
+        "400":
+          description: wrong request parameter
+          schema:
+            $ref: '#/definitions/response.Struct'
+      summary: Create role
+      tags:
+      - Role
+  /user:
+    post:
+      consumes:
+      - application/json
+      description: Create new user
+      parameters:
+      - description: create new user
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AddUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Struct'
+        "400":
+          description: wrong request parameter
+          schema:
+            $ref: '#/definitions/response.Struct'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Struct'
+      security:
+      - ApiKeyAuth: []
+      summary: create user
+      tags:
+      - User
 swagger: "2.0"

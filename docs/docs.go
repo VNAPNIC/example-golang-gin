@@ -43,7 +43,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/services.AuthStruct"
+                            "$ref": "#/definitions/dto.Auth"
                         }
                     }
                 ],
@@ -68,9 +68,171 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/role": {
+            "post": {
+                "description": "Create role",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Role"
+                ],
+                "summary": "Create role",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "role_id",
+                        "name": "role_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "YES",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateRole"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Struct"
+                        }
+                    },
+                    "400": {
+                        "description": "wrong request parameter",
+                        "schema": {
+                            "$ref": "#/definitions/response.Struct"
+                        }
+                    }
+                }
+            }
+        },
+        "/user": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create new user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "create user",
+                "parameters": [
+                    {
+                        "description": "create new user",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AddUser"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Struct"
+                        }
+                    },
+                    "400": {
+                        "description": "wrong request parameter",
+                        "schema": {
+                            "$ref": "#/definitions/response.Struct"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Struct"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "dto.AddUser": {
+            "type": "object",
+            "required": [
+                "password",
+                "user_name"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "maxLength": 20,
+                    "minLength": 4
+                },
+                "role_id": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "user_name": {
+                    "type": "string",
+                    "maxLength": 20,
+                    "minLength": 4
+                }
+            }
+        },
+        "dto.Auth": {
+            "type": "object",
+            "required": [
+                "password",
+                "user_name"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "maxLength": 20,
+                    "minLength": 4
+                },
+                "user_name": {
+                    "type": "string",
+                    "maxLength": 20,
+                    "minLength": 4
+                }
+            }
+        },
+        "dto.CreateRole": {
+            "type": "object",
+            "properties": {
+                "is_admin": {
+                    "type": "boolean"
+                },
+                "role_key": {
+                    "type": "string"
+                },
+                "role_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.JSONTime": {
+            "type": "object",
+            "properties": {
+                "time.Time": {
+                    "type": "string"
+                }
+            }
+        },
         "response.Struct": {
             "type": "object",
             "properties": {
@@ -81,27 +243,8 @@ var doc = `{
                 "message": {
                     "type": "string"
                 },
-                "time_stamp": {
-                    "type": "integer"
-                }
-            }
-        },
-        "services.AuthStruct": {
-            "type": "object",
-            "required": [
-                "password",
-                "user_name"
-            ],
-            "properties": {
-                "password": {
-                    "type": "string",
-                    "maxLength": 20,
-                    "minLength": 6
-                },
-                "user_name": {
-                    "type": "string",
-                    "maxLength": 20,
-                    "minLength": 6
+                "time": {
+                    "$ref": "#/definitions/response.JSONTime"
                 }
             }
         }

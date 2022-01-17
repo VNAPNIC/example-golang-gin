@@ -1,19 +1,19 @@
 package model
 
 import (
-	"serverhealthcarepanel/utils"
-
 	_ "gorm.io/gorm"
+	"serverhealthcarepanel/utils"
+	"time"
 )
 
 type Auth struct {
 	BaseModel
-	RoleId     int      `gorm:"DEFAULT:0;NOT NULL;" json:"role_id"`
-	Status     int      `gorm:"type:int(1);DEFAULT:0;NOT NULL;" json:"status"`
-	Username   string   `gorm:"Size:20;uniqueIndex;NOT NULL;" json:"user_name"`
-	Password   string   `gorm:"Size:50;NOT NULL;" json:"-"`
-	LoggedInAt JSONTime `gorm:"type:timestamp;default:current_timestamp" json:"logged_in_at"`
-	Role       Role     `gorm:"references:RoleId"`
+	RoleId     uint      `gorm:"DEFAULT:0;NOT NULL;" json:"role_id"`
+	Status     int       `gorm:"type:int(1);DEFAULT:0;NOT NULL;" json:"status"`
+	Username   string    `gorm:"Size:20;uniqueIndex;NOT NULL;" json:"user_name"`
+	Password   string    `gorm:"Size:50;NOT NULL;" json:"-"`
+	LoggedInAt time.Time `gorm:"type:datetime" json:"logged_in_at"`
+	Role       Role      `gorm:"references:RoleId;"`
 }
 
 func (Auth) TableName() string {
@@ -31,7 +31,7 @@ func CreateUser(auth Auth) error {
 func CheckAuth(username string, password string) (error, bool, Auth) {
 	var auth Auth
 
-	res := db.Select([]string{"id"}).Where(Auth{
+	res := db.Where(Auth{
 		Username: username,
 		Password: utils.EncodeUserPassword(password),
 	}).Preload("Role").First(&auth)
@@ -40,7 +40,7 @@ func CheckAuth(username string, password string) (error, bool, Auth) {
 		return err, false, Auth{}
 	}
 
-	if auth.ID > 0 {
+	if auth.ID <= 0 {
 		return nil, false, Auth{}
 	}
 
