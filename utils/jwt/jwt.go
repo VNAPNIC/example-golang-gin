@@ -1,4 +1,4 @@
-package utils
+package jwtUtil
 
 import (
 	"fmt"
@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt"
+	"github.com/labstack/echo/v4"
 )
 
 var jwtSecret = []byte(setting.AppSetting.JwtSecret)
@@ -20,8 +21,9 @@ type Claims struct {
 
 // GenerateToken Generate Token used for auth
 func GenerateToken(userClaim Claims) (string, error) {
+	timeNow := time.Now()
 	//expire time
-	expireTime := time.Now().Add(time.Minute * 5)
+	expireTime := timeNow.Add(time.Hour * 24)
 	claims := Claims{
 		userClaim.UserId,
 		userClaim.Username,
@@ -29,7 +31,7 @@ func GenerateToken(userClaim Claims) (string, error) {
 		userClaim.IsAdmin,
 		jwt.StandardClaims{
 			Issuer:    "server_healthcare_panel",
-			IssuedAt:  time.Now().Unix(),
+			IssuedAt:  timeNow.Unix(),
 			ExpiresAt: expireTime.Unix(),
 		},
 	}
@@ -64,4 +66,10 @@ func ParseToken(token string) (*Claims, error) {
 	}
 
 	return nil, err
+}
+
+func GetClaim(ctx echo.Context) Claims {
+	claims := ctx.Get("claims")
+	user := claims.(*Claims)
+	return *user
 }

@@ -3,9 +3,11 @@ package authHandler
 import (
 	"net/http"
 	"serverhealthcarepanel/dto"
+	model "serverhealthcarepanel/models"
 	userService "serverhealthcarepanel/services/user"
 	"serverhealthcarepanel/utils"
 	"serverhealthcarepanel/utils/code"
+	jwtUtil "serverhealthcarepanel/utils/jwt"
 	"serverhealthcarepanel/utils/response"
 
 	"github.com/labstack/echo/v4"
@@ -38,7 +40,7 @@ func UserLogin(ctx echo.Context) error {
 	RCode := code.ErrorUserPasswordInvalid
 
 	if isExist {
-		token, err := utils.GenerateToken(utils.Claims{
+		token, err := jwtUtil.GenerateToken(jwtUtil.Claims{
 			UserId:   user.ID,
 			Username: user.Username,
 			RoleKey:  user.Role.RoleKey,
@@ -58,9 +60,60 @@ func UserLogin(ctx echo.Context) error {
 
 	return response.Error(
 		ctx,
-		http.StatusUnauthorized,
+		http.StatusOK,
 		RCode,
 		code.GetMsg(RCode),
 		utils.DetectError(RError),
 	)
+}
+
+// @Summary User Logout
+// @Description 用户登出
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Tags User
+// @Success 200 {object} common.Response
+// @Router /user/logout [put]
+// func UserLogout(ctx echo.Context) {
+
+// 	user := jwtUtil.GetClaim(ctx)
+
+// 	userService.JoinBlockList(user.UserId, c.GetHeader("Authorization")[7:])
+
+// 	appG.Response(http.StatusOK, code.SUCCESS, "ok", nil)
+// }
+
+// ChangePassword
+// @Summary Change password
+// @Description Change password
+// @Accept json
+// @Produce json
+// @Tags User
+// @Param payload body dto.ChangePassword true "user change password"
+// @Success 200 {object} response.Struct
+// @Router /user/change_password [put]
+func ChangePassword(ctx echo.Context) error {
+	password := new(dto.ChangePassword)
+
+	if err := ctx.Bind(&password); err != nil {
+		return response.Error(ctx, http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err.Error())
+	}
+
+	if err := ctx.Validate(*password); err != nil {
+		return response.Error(ctx, http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err.Error())
+	}
+
+	user := jwtUtil.GetClaim(ctx)
+
+	_, isExist, auth := model.CheckAuth(user.Username, password.OldPassword)
+	if !isExist {
+		return response.Error(ctx, http.StatusOK, code.ErrorUserOldPasswordInvalid, code.GetMsg(code.ErrorUserOldPasswordInvalid), nil)
+	}
+
+	if successful, _ := userService.ChangePassword(auth.ID, password.NewPassword); !successful {
+		return response.Error(ctx, http.StatusOK, code.UnknownError, code.GetMsg(code.UnknownError), nil)
+	}
+
+	return response.Success(ctx, nil)
 }

@@ -1,19 +1,21 @@
 package routers
 
 import (
-	"github.com/labstack/echo/v4"
 	"net/http"
-	"serverhealthcarepanel/handlers/auth"
-	"serverhealthcarepanel/handlers/user"
+	authHandler "serverhealthcarepanel/handlers/auth"
+	userHandler "serverhealthcarepanel/handlers/user"
 	"serverhealthcarepanel/middleware"
+
+	"github.com/labstack/echo/v4"
 )
 
 func InitUserRouter(Router *echo.Group) {
 	Router.POST("/login", authHandler.UserLogin)
 	Router.POST("/register", userHandler.CreateUser)
 
-	user := Router.Group("/user", middleware.JWTHandler())
-	user.GET("", getUsers)
+	groupUser := Router.Group("/user", middleware.JWTHandler())
+	groupUser.GET("", getUsers)
+	groupUser.PUT("/change_password", authHandler.ChangePassword)
 }
 
 var users = []string{"Joe", "Veer", "Zion"}

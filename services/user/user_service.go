@@ -33,3 +33,7 @@ func CreateUser(newUser *dto.AddUser) error {
 		RoleId:   newUser.RoleId,
 	})
 }
+
+func ChangePassword(userId uint, password string) (bool, model.Auth) {
+	return model.ChangePassword(userId, utils.EncodeUserPassword(password))
+}

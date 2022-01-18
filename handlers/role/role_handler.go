@@ -33,7 +33,7 @@ func CreateRole(ctx echo.Context) error {
 	}
 
 	if err := role.CreateRole(newRole); err != nil {
-		return response.Error(ctx, http.StatusInternalServerError, code.ErrorFailedAddNewRole, code.GetMsg(code.ErrorFailedAddNewRole), err.Error())
+		return response.Error(ctx, http.StatusOK, code.ErrorFailedAddNewRole, code.GetMsg(code.ErrorFailedAddNewRole), err.Error())
 	}
 
 	return response.Success(ctx, nil)

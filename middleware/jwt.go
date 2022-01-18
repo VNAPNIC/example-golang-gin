@@ -2,8 +2,8 @@ package middleware
 
 import (
 	"net/http"
-	"serverhealthcarepanel/utils"
 	"serverhealthcarepanel/utils/code"
+	jwtUtil "serverhealthcarepanel/utils/jwt"
 	"serverhealthcarepanel/utils/response"
 	"strings"
 
@@ -29,13 +29,13 @@ func JWTHandler() echo.MiddlewareFunc {
 				}
 			}
 
-			var claims *utils.Claims
+			var claims *jwtUtil.Claims
 			var err error
 
 			if token == "" {
 				rCode = code.TokenInvalid
 			} else {
-				claims, err = utils.ParseToken(token)
+				claims, err = jwtUtil.ParseToken(token)
 				if err != nil {
 					switch err.(*jwt.ValidationError).Errors {
 					case jwt.ValidationErrorExpired:

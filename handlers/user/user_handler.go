@@ -34,7 +34,7 @@ func CreateUser(ctx echo.Context) error {
 	}
 
 	if err := userService.CreateUser(newUser); err != nil {
-		return response.Error(ctx, http.StatusInternalServerError, code.ErrorFailedAddNewUser, code.GetMsg(code.ErrorFailedAddNewUser), err.Error())
+		return response.Error(ctx, http.StatusOK, code.ErrorFailedAddNewUser, code.GetMsg(code.ErrorFailedAddNewUser), err.Error())
 	}
 
 	return response.Success(ctx, nil)

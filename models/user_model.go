@@ -47,3 +47,19 @@ func CheckAuth(username string, password string) (error, bool, Auth) {
 
 	return nil, true, auth
 }
+
+func ChangePassword(userId uint, password string) (bool, Auth) {
+	var auth Auth
+	wheres := make(map[string]interface{})
+	wheres["id"] = userId
+
+	updates := make(map[string]interface{})
+	updates["password"] = password
+	err, rowAffected := Update(&Auth{}, wheres, updates)
+
+	if rowAffected == 0 || err != nil {
+		return false, auth
+	}
+
+	return true, auth
+}

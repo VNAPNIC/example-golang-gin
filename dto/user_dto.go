@@ -17,4 +17,9 @@ type (
 		Auth
 		RoleId uint `json:"role_id" validate:"omitempty,numeric,min=0"`
 	}
+
+	ChangePassword struct {
+		OldPassword string `json:"old_password" validate:"required,min=4" minLength:"4"`
+		NewPassword string `json:"new_password" validate:"required,min=4" minLength:"4"`
+	}
 )
