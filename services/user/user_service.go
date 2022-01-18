@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func CheckAuth(auth *dto.Auth) (error, bool, model.Auth) {
+func CheckAuth(auth *dto.Auth) (interface{}, bool, model.Auth) {
 	return model.CheckAuth(auth.Username, auth.Password)
 }
 

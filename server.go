@@ -5,6 +5,7 @@ import (
 	model "serverhealthcarepanel/models"
 	"serverhealthcarepanel/routers"
 	"serverhealthcarepanel/utils"
+	redisUtil "serverhealthcarepanel/utils/redis"
 	"serverhealthcarepanel/utils/setting"
 
 	"github.com/go-playground/validator"
@@ -17,6 +18,7 @@ import (
 func init() {
 	setting.Setup()
 	model.Setup()
+	redisUtil.Setup()
 }
 
 // @title Healthcare panel

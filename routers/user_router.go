@@ -15,7 +15,7 @@ func InitUserRouter(Router *echo.Group) {
 
 	groupUser := Router.Group("/user", middleware.JWTHandler())
 	groupUser.GET("", getUsers)
-	groupUser.PUT("/change_password", authHandler.ChangePassword)
+	groupUser.PUT("/change-password", authHandler.ChangePassword)
 }
 
 var users = []string{"Joe", "Veer", "Zion"}

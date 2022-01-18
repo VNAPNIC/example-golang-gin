@@ -29,7 +29,7 @@ func CreateUser(auth Auth) error {
 	return nil
 }
 
-func CheckAuth(username string, password string) (error, bool, Auth) {
+func CheckAuth(username string, password string) (interface{}, bool, Auth) {
 	var auth Auth
 
 	res := db.Where(Auth{

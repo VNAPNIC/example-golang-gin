@@ -63,7 +63,7 @@ func UserLogin(ctx echo.Context) error {
 		http.StatusOK,
 		RCode,
 		code.GetMsg(RCode),
-		utils.DetectError(RError),
+		utils.DetectError(RError.(error)),
 	)
 }
 
