@@ -66,16 +66,14 @@ func Setup() {
 	fmt.Println("open  mysql  successfully!")
 
 	// Default create role ADMIN and account admin
-	if !RoleExists(1) {
+	if !RoleExists("ADMIN") {
 		role := Role{
 			RoleName: "Administrator",
 			RoleKey:  "ADMIN",
 			IsAdmin:  true,
 			Status:   1,
 		}
-		res := db.Create(&role)
-
-		if err := res.Error; err == nil {
+		if res := db.Create(&role); res.Error == nil {
 			CreateUser(Auth{
 				Username: "admin",
 				Password: utils.EncodeUserPassword("123456"),

@@ -17,9 +17,9 @@ func (Role) TableName() string {
 	return TablePrefix + "role"
 }
 
-func RoleExists(roleId uint) bool {
+func RoleExists(roleKey string) bool {
 	var exists bool
-	res := db.Model(&Role{}).Select("count(*) > 0").Where("id = ?", roleId).Find(&exists).Error
+	res := db.Model(&Role{}).Select("count(*) > 0").Where("role_key = ?", &roleKey).Find(&exists).Error
 	return res == nil && exists
 }
 
