@@ -4,13 +4,13 @@ go 1.17
 
 require (
 	github.com/go-playground/validator v9.31.0+incompatible
-	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/go-redis/redis/v8 v8.11.4
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/labstack/echo/v4 v4.6.3
 	github.com/swaggo/echo-swagger v1.1.4
 	github.com/swaggo/swag v1.7.8
+	golang.org/x/net v0.0.0-20220114011407-0dd24b26b47d
 	gopkg.in/ini.v1 v1.66.2
 	gorm.io/driver/mysql v1.2.3
 	gorm.io/gorm v1.22.5
@@ -40,7 +40,6 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.1 // indirect
 	golang.org/x/crypto v0.0.0-20220112180741-5e0467b6c7ce // indirect
-	golang.org/x/net v0.0.0-20220114011407-0dd24b26b47d // indirect
 	golang.org/x/sys v0.0.0-20220114195835-da31bd327af9 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20201208040808-7e3f01d25324 // indirect

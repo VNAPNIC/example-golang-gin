@@ -2,6 +2,8 @@ package jwtUtil
 
 import (
 	"fmt"
+	"log"
+	redisUtil "serverhealthcarepanel/utils/redis"
 	"serverhealthcarepanel/utils/setting"
 	"time"
 
@@ -39,7 +41,22 @@ func GenerateToken(userClaim Claims) (string, error) {
 	tokenClaim := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	token, err := tokenClaim.SignedString(jwtSecret)
 
-	return token, err
+	if err != nil {
+		log.Println(err)
+		return token, err
+	}
+
+	// set token to the redis
+	successful, err := redisUtil.Set(claims.Issuer, token, time.Hour*24)
+	if err != nil {
+		log.Println(err)
+		return token, err
+	}
+	if !successful {
+		return token, redisUtil.Error{Msg: "Can't set token to redis"}
+	}
+
+	return token, nil
 }
 
 // ParseToken parsing token

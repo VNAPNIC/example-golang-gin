@@ -1,14 +1,14 @@
 package middleware
 
 import (
-	"net/http"
-	"serverhealthcarepanel/utils/code"
-	jwtUtil "serverhealthcarepanel/utils/jwt"
-	"serverhealthcarepanel/utils/response"
-	"strings"
-
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
+	"net/http"
+	"serverhealthcarepanel/dto"
+	"serverhealthcarepanel/utils/code"
+	"serverhealthcarepanel/utils/jwt"
+	redisUtil "serverhealthcarepanel/utils/redis"
+	"strings"
 )
 
 func JWTHandler() echo.MiddlewareFunc {
@@ -46,13 +46,23 @@ func JWTHandler() echo.MiddlewareFunc {
 				}
 			}
 
-			//jwtCount, _ := userService.InBlockList(token)
-			//if jwtCount >= 1 {
-			//	rCode = code.AuthTokenInBlockList
-			//}
+			// check token on the redis
+			if rCode != code.SUCCESS && rCode != code.TokenInvalid && claims != nil {
+				_, _ = redisUtil.Delete(claims.Issuer)
+			} else if claims != nil {
+				isExist, err := redisUtil.Exists(claims.Issuer)
+				if err != nil {
+					rCode = code.ErrorAuthCheckTokenTimeout
+					data = err.Error()
+				}
+				if isExist == false {
+					rCode = code.ErrorAuthCheckTokenTimeout
+					data = redisUtil.Error{Msg: "Token on the redis is not found!"}
+				}
+			}
 
 			if rCode != code.SUCCESS {
-				return response.Error(ctx,
+				return dto.Error(ctx,
 					http.StatusUnauthorized,
 					rCode,
 					code.GetMsg(rCode),

@@ -3,7 +3,7 @@ package userService
 import (
 	"log"
 	"serverhealthcarepanel/dto"
-	model "serverhealthcarepanel/models"
+	"serverhealthcarepanel/models"
 	"serverhealthcarepanel/utils"
 	"strings"
 	"time"
@@ -13,6 +13,7 @@ func CheckAuth(auth *dto.Auth) (interface{}, bool, model.Auth) {
 	return model.CheckAuth(auth.Username, auth.Password)
 }
 
+// SetLoggedTime
 // Set login time
 func SetLoggedTime(userId uint) {
 	wheres := make(map[string]interface{})

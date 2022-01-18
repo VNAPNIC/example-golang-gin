@@ -2,7 +2,6 @@ definitions:
   dto.AddUser:
     properties:
       password:
-        maxLength: 20
         minLength: 4
         type: string
       role_id:
@@ -19,7 +18,6 @@ definitions:
   dto.Auth:
     properties:
       password:
-        maxLength: 20
         minLength: 4
         type: string
       user_name:
@@ -30,6 +28,18 @@ definitions:
     - password
     - user_name
     type: object
+  dto.ChangePassword:
+    properties:
+      new_password:
+        minLength: 4
+        type: string
+      old_password:
+        minLength: 4
+        type: string
+    required:
+    - new_password
+    - old_password
+    type: object
   dto.CreateRole:
     properties:
       is_admin:
@@ -39,12 +49,12 @@ definitions:
       role_name:
         type: string
     type: object
-  response.JSONTime:
+  dto.JSONTime:
     properties:
       time.Time:
         type: string
     type: object
-  response.Struct:
+  dto.Struct:
     properties:
       code:
         type: integer
@@ -52,7 +62,7 @@ definitions:
       message:
         type: string
       time:
-        $ref: '#/definitions/response.JSONTime'
+        $ref: '#/definitions/dto.JSONTime'
     type: object
 info:
   contact: {}
@@ -77,15 +87,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/response.Struct'
+            $ref: '#/definitions/dto.Struct'
         "400":
           description: wrong request parameter
           schema:
-            $ref: '#/definitions/response.Struct'
+            $ref: '#/definitions/dto.Struct'
         "401":
           description: The corresponding username or password is incorrect
           schema:
-            $ref: '#/definitions/response.Struct'
+            $ref: '#/definitions/dto.Struct'
       summary: User Login
       tags:
       - Auth
@@ -112,11 +122,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/response.Struct'
+            $ref: '#/definitions/dto.Struct'
         "400":
           description: wrong request parameter
           schema:
-            $ref: '#/definitions/response.Struct'
+            $ref: '#/definitions/dto.Struct'
       summary: Create role
       tags:
       - Role
@@ -138,18 +148,55 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/response.Struct'
+            $ref: '#/definitions/dto.Struct'
         "400":
           description: wrong request parameter
           schema:
-            $ref: '#/definitions/response.Struct'
+            $ref: '#/definitions/dto.Struct'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/response.Struct'
+            $ref: '#/definitions/dto.Struct'
       security:
       - ApiKeyAuth: []
       summary: create user
+      tags:
+      - User
+  /user/change_password:
+    put:
+      consumes:
+      - application/json
+      description: Change password
+      parameters:
+      - description: user change password
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ChangePassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.Struct'
+      summary: Change password
+      tags:
+      - User
+  /user/logout:
+    put:
+      consumes:
+      - application/json
+      description: User logout
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.Struct'
+      summary: User Logout
       tags:
       - User
 swagger: "2.0"

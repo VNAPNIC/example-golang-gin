@@ -51,19 +51,19 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.Struct"
+                            "$ref": "#/definitions/dto.Struct"
                         }
                     },
                     "400": {
                         "description": "wrong request parameter",
                         "schema": {
-                            "$ref": "#/definitions/response.Struct"
+                            "$ref": "#/definitions/dto.Struct"
                         }
                     },
                     "401": {
                         "description": "The corresponding username or password is incorrect",
                         "schema": {
-                            "$ref": "#/definitions/response.Struct"
+                            "$ref": "#/definitions/dto.Struct"
                         }
                     }
                 }
@@ -104,13 +104,13 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.Struct"
+                            "$ref": "#/definitions/dto.Struct"
                         }
                     },
                     "400": {
                         "description": "wrong request parameter",
                         "schema": {
-                            "$ref": "#/definitions/response.Struct"
+                            "$ref": "#/definitions/dto.Struct"
                         }
                     }
                 }
@@ -149,19 +149,76 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.Struct"
+                            "$ref": "#/definitions/dto.Struct"
                         }
                     },
                     "400": {
                         "description": "wrong request parameter",
                         "schema": {
-                            "$ref": "#/definitions/response.Struct"
+                            "$ref": "#/definitions/dto.Struct"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Struct"
+                            "$ref": "#/definitions/dto.Struct"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/change_password": {
+            "put": {
+                "description": "Change password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Change password",
+                "parameters": [
+                    {
+                        "description": "user change password",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.ChangePassword"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Struct"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/logout": {
+            "put": {
+                "description": "User logout",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "User Logout",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Struct"
                         }
                     }
                 }
@@ -178,7 +235,6 @@ var doc = `{
             "properties": {
                 "password": {
                     "type": "string",
-                    "maxLength": 20,
                     "minLength": 4
                 },
                 "role_id": {
@@ -201,12 +257,28 @@ var doc = `{
             "properties": {
                 "password": {
                     "type": "string",
-                    "maxLength": 20,
                     "minLength": 4
                 },
                 "user_name": {
                     "type": "string",
                     "maxLength": 20,
+                    "minLength": 4
+                }
+            }
+        },
+        "dto.ChangePassword": {
+            "type": "object",
+            "required": [
+                "new_password",
+                "old_password"
+            ],
+            "properties": {
+                "new_password": {
+                    "type": "string",
+                    "minLength": 4
+                },
+                "old_password": {
+                    "type": "string",
                     "minLength": 4
                 }
             }
@@ -225,7 +297,7 @@ var doc = `{
                 }
             }
         },
-        "response.JSONTime": {
+        "dto.JSONTime": {
             "type": "object",
             "properties": {
                 "time.Time": {
@@ -233,7 +305,7 @@ var doc = `{
                 }
             }
         },
-        "response.Struct": {
+        "dto.Struct": {
             "type": "object",
             "properties": {
                 "code": {
@@ -244,7 +316,7 @@ var doc = `{
                     "type": "string"
                 },
                 "time": {
-                    "$ref": "#/definitions/response.JSONTime"
+                    "$ref": "#/definitions/dto.JSONTime"
                 }
             }
         }
