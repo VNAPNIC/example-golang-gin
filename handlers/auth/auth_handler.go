@@ -3,7 +3,7 @@ package authHandler
 import (
 	"net/http"
 	"serverhealthcarepanel/dto"
-	"serverhealthcarepanel/services/user"
+	userService "serverhealthcarepanel/services/user"
 	"serverhealthcarepanel/utils"
 	"serverhealthcarepanel/utils/code"
 	"serverhealthcarepanel/utils/response"

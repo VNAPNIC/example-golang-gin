@@ -1,18 +1,29 @@
 package userService
 
 import (
+	"log"
 	"serverhealthcarepanel/dto"
-	"serverhealthcarepanel/models"
+	model "serverhealthcarepanel/models"
 	"serverhealthcarepanel/utils"
 	"strings"
+	"time"
 )
 
 func CheckAuth(auth *dto.Auth) (error, bool, model.Auth) {
 	return model.CheckAuth(auth.Username, auth.Password)
 }
 
+// Set login time
 func SetLoggedTime(userId uint) {
+	wheres := make(map[string]interface{})
+	wheres["id"] = userId
 
+	updates := make(map[string]interface{})
+	updates["logged_in_at"] = time.Now()
+	_, rowAffected := model.Update(&model.Auth{}, wheres, updates)
+	if rowAffected == 0 {
+		log.Println("Failed to set login time!")
+	}
 }
 
 func CreateUser(newUser *dto.AddUser) error {

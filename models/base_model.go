@@ -3,6 +3,7 @@ package model
 import (
 	"database/sql"
 	"fmt"
+	"serverhealthcarepanel/utils"
 	"serverhealthcarepanel/utils/setting"
 	"time"
 
@@ -63,4 +64,31 @@ func Setup() {
 	}
 
 	fmt.Println("open  mysql  successfully!")
+
+	// Default create role ADMIN and account admin
+	if !RoleExists(1) {
+		role := Role{
+			RoleName: "Administrator",
+			RoleKey:  "ADMIN",
+			IsAdmin:  true,
+			Status:   1,
+		}
+		res := db.Create(&role)
+
+		if err := res.Error; err == nil {
+			CreateUser(Auth{
+				Username: "admin",
+				Password: utils.EncodeUserPassword("123456"),
+				RoleId:   role.RoleId,
+			})
+		}
+	}
+}
+
+func Update(tableStruct interface{}, wheres map[string]interface{}, updates map[string]interface{}) (error, int64) {
+	res := db.Model(&tableStruct).Where(wheres).Updates(updates)
+	if err := res.Error; err != nil {
+		return err, 0
+	}
+	return nil, res.RowsAffected
 }

@@ -17,8 +17,14 @@ func (Role) TableName() string {
 	return TablePrefix + "role"
 }
 
-func CreateRole(auth Role) error {
-	res := db.Create(&auth)
+func RoleExists(roleId uint) bool {
+	var exists bool
+	res := db.Model(&Role{}).Select("count(*) > 0").Where("id = ?", roleId).Find(&exists).Error
+	return res == nil && exists
+}
+
+func CreateRole(role Role) error {
+	res := db.Create(&role)
 	if err := res.Error; err != nil {
 		return err
 	}

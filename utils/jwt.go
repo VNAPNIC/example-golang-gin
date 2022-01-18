@@ -2,9 +2,10 @@ package utils
 
 import (
 	"fmt"
-	"github.com/golang-jwt/jwt"
 	"serverhealthcarepanel/utils/setting"
 	"time"
+
+	"github.com/golang-jwt/jwt"
 )
 
 var jwtSecret = []byte(setting.AppSetting.JwtSecret)
@@ -19,10 +20,8 @@ type Claims struct {
 
 // GenerateToken Generate Token used for auth
 func GenerateToken(userClaim Claims) (string, error) {
-	nowTime := time.Now()
-	zeroTime := time.Date(nowTime.YearDay(), nowTime.Month(), nowTime.Day(), 0, 0, 0, 0, nowTime.Location())
 	//expire time
-	expireTime := zeroTime.Add(time.Hour * 24)
+	expireTime := time.Now().Add(time.Minute * 5)
 	claims := Claims{
 		userClaim.UserId,
 		userClaim.Username,

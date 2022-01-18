@@ -1,9 +1,10 @@
 package model
 
 import (
-	_ "gorm.io/gorm"
 	"serverhealthcarepanel/utils"
 	"time"
+
+	_ "gorm.io/gorm"
 )
 
 type Auth struct {
@@ -11,7 +12,7 @@ type Auth struct {
 	RoleId     uint      `gorm:"DEFAULT:0;NOT NULL;" json:"role_id"`
 	Status     int       `gorm:"type:int(1);DEFAULT:0;NOT NULL;" json:"status"`
 	Username   string    `gorm:"Size:20;uniqueIndex;NOT NULL;" json:"user_name"`
-	Password   string    `gorm:"Size:50;NOT NULL;" json:"-"`
+	Password   string    `gorm:"NOT NULL;" json:"-"`
 	LoggedInAt time.Time `gorm:"type:datetime" json:"logged_in_at"`
 	Role       Role      `gorm:"references:RoleId;"`
 }

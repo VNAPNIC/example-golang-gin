@@ -1,13 +1,14 @@
 package middleware
 
 import (
-	"github.com/golang-jwt/jwt"
-	"github.com/labstack/echo/v4"
 	"net/http"
 	"serverhealthcarepanel/utils"
 	"serverhealthcarepanel/utils/code"
 	"serverhealthcarepanel/utils/response"
 	"strings"
+
+	"github.com/golang-jwt/jwt"
+	"github.com/labstack/echo/v4"
 )
 
 func JWTHandler() echo.MiddlewareFunc {
