@@ -96,6 +96,8 @@ paths:
           description: The corresponding username or password is incorrect
           schema:
             $ref: '#/definitions/dto.Struct'
+      security:
+      - ApiKeyAuth: []
       summary: User Login
       tags:
       - Auth
@@ -127,6 +129,8 @@ paths:
           description: wrong request parameter
           schema:
             $ref: '#/definitions/dto.Struct'
+      security:
+      - ApiKeyAuth: []
       summary: Create role
       tags:
       - Role
@@ -181,6 +185,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/dto.Struct'
+      security:
+      - ApiKeyAuth: []
       summary: Change password
       tags:
       - User
@@ -196,7 +202,14 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/dto.Struct'
+      security:
+      - ApiKeyAuth: []
       summary: User Logout
       tags:
       - User
+securityDefinitions:
+  ApiKeyAuth:
+    in: 'header like: Bearer xxxx'
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

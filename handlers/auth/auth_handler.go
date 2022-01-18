@@ -12,11 +12,11 @@ import (
 	"serverhealthcarepanel/utils/redis"
 )
 
-// UserLogin
 // @Summary User Login
 // @Description User Login
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Tags Auth
 // @Param payload body dto.Auth true "user login"
 // @Success 200 {object} dto.Struct
@@ -66,11 +66,11 @@ func UserLogin(ctx echo.Context) error {
 	)
 }
 
-// UserLogout
 // @Summary User Logout
 // @Description User logout
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Tags User
 // @Success 200 {object} dto.Struct
 // @Router /user/logout [put]
@@ -89,11 +89,11 @@ func UserLogout(ctx echo.Context) error {
 	return dto.Success(ctx, nil)
 }
 
-// ChangePassword
 // @Summary Change password
 // @Description Change password
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Tags User
 // @Param payload body dto.ChangePassword true "user change password"
 // @Success 200 {object} dto.Struct

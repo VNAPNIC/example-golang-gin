@@ -8,7 +8,6 @@ import (
 	"serverhealthcarepanel/utils/code"
 )
 
-// CreateUser
 // @Summary create user
 // @Description Create new user
 // @Accept json

@@ -8,11 +8,11 @@ import (
 	"serverhealthcarepanel/utils/code"
 )
 
-// CreateRole
 // @Summary Create role
 // @Description Create role
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Tags Role
 // @Param role_id path int true "role_id"
 // @Param payload body dto.CreateRole true "YES"、

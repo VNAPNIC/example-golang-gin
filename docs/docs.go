@@ -25,6 +25,11 @@ var doc = `{
     "paths": {
         "/login": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "User Login",
                 "consumes": [
                     "application/json"
@@ -71,6 +76,11 @@ var doc = `{
         },
         "/role": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Create role",
                 "consumes": [
                     "application/json"
@@ -169,6 +179,11 @@ var doc = `{
         },
         "/user/change_password": {
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Change password",
                 "consumes": [
                     "application/json"
@@ -203,6 +218,11 @@ var doc = `{
         },
         "/user/logout": {
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "User logout",
                 "consumes": [
                     "application/json"
@@ -319,6 +339,13 @@ var doc = `{
                     "$ref": "#/definitions/dto.JSONTime"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header like: Bearer xxxx"
         }
     }
 }`

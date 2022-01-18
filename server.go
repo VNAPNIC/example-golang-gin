@@ -23,6 +23,7 @@ func init() {
 
 // @title Healthcare panel
 // @version 1.0
+// @securityDefinitions.apikey ApiKeyAuth
 // @in header like: Bearer xxxx
 // @name Authorization
 func main() {

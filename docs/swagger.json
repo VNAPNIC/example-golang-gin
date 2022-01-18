@@ -8,6 +8,11 @@
     "paths": {
         "/login": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "User Login",
                 "consumes": [
                     "application/json"
@@ -54,6 +59,11 @@
         },
         "/role": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Create role",
                 "consumes": [
                     "application/json"
@@ -152,6 +162,11 @@
         },
         "/user/change_password": {
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Change password",
                 "consumes": [
                     "application/json"
@@ -186,6 +201,11 @@
         },
         "/user/logout": {
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "User logout",
                 "consumes": [
                     "application/json"
@@ -302,6 +322,13 @@
                     "$ref": "#/definitions/dto.JSONTime"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header like: Bearer xxxx"
         }
     }
 }
