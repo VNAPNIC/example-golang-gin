@@ -30,7 +30,7 @@ func GenerateToken(userClaim Claims) (string, error) {
 		userClaim.RoleKey,
 		userClaim.IsAdmin,
 		jwt.StandardClaims{
-			Issuer:    "server_healthcare_panel",
+			Issuer:    "server-healthcare-panel",
 			IssuedAt:  timeNow.Unix(),
 			ExpiresAt: expireTime.Unix(),
 		},
