@@ -3,7 +3,7 @@ package utils
 import (
 	"crypto/md5"
 	"encoding/hex"
-	"serverhealthcarepanel/utils/setting"
+	"healthcare-panel/utils/setting"
 )
 
 // EncodeMD5 md5 encryption

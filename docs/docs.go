@@ -25,11 +25,6 @@ var doc = `{
     "paths": {
         "/login": {
             "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
                 "description": "User Login",
                 "consumes": [
                     "application/json"
@@ -56,19 +51,19 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.Struct"
+                            "$ref": "#/definitions/common.Response"
                         }
                     },
                     "400": {
                         "description": "wrong request parameter",
                         "schema": {
-                            "$ref": "#/definitions/dto.Struct"
+                            "$ref": "#/definitions/common.Response"
                         }
                     },
                     "401": {
                         "description": "The corresponding username or password is incorrect",
                         "schema": {
-                            "$ref": "#/definitions/dto.Struct"
+                            "$ref": "#/definitions/common.Response"
                         }
                     }
                 }
@@ -114,13 +109,13 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.Struct"
+                            "$ref": "#/definitions/common.Response"
                         }
                     },
                     "400": {
                         "description": "wrong request parameter",
                         "schema": {
-                            "$ref": "#/definitions/dto.Struct"
+                            "$ref": "#/definitions/common.Response"
                         }
                     }
                 }
@@ -159,19 +154,19 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.Struct"
+                            "$ref": "#/definitions/common.Response"
                         }
                     },
                     "400": {
                         "description": "wrong request parameter",
                         "schema": {
-                            "$ref": "#/definitions/dto.Struct"
+                            "$ref": "#/definitions/common.Response"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/dto.Struct"
+                            "$ref": "#/definitions/common.Response"
                         }
                     }
                 }
@@ -210,7 +205,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.Struct"
+                            "$ref": "#/definitions/common.Response"
                         }
                     }
                 }
@@ -238,7 +233,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.Struct"
+                            "$ref": "#/definitions/common.Response"
                         }
                     }
                 }
@@ -246,6 +241,21 @@ var doc = `{
         }
     },
     "definitions": {
+        "common.Response": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "message": {
+                    "type": "string"
+                },
+                "time": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.AddUser": {
             "type": "object",
             "required": [
@@ -314,29 +324,6 @@ var doc = `{
                 },
                 "role_name": {
                     "type": "string"
-                }
-            }
-        },
-        "dto.JSONTime": {
-            "type": "object",
-            "properties": {
-                "time.Time": {
-                    "type": "string"
-                }
-            }
-        },
-        "dto.Struct": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "integer"
-                },
-                "data": {},
-                "message": {
-                    "type": "string"
-                },
-                "time": {
-                    "$ref": "#/definitions/dto.JSONTime"
                 }
             }
         }

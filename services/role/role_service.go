@@ -1,8 +1,8 @@
 package role
 
 import (
-	"serverhealthcarepanel/dto"
-	"serverhealthcarepanel/models"
+	"healthcare-panel/dto"
+	model "healthcare-panel/models"
 )
 
 func CreateRole(newRole *dto.CreateRole) error {

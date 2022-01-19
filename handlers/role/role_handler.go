@@ -1,11 +1,12 @@
 package roleHandler
 
 import (
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
+	"healthcare-panel/common"
+	"healthcare-panel/dto"
+	"healthcare-panel/services/role"
+	"healthcare-panel/utils/code"
 	"net/http"
-	"serverhealthcarepanel/dto"
-	"serverhealthcarepanel/services/role"
-	"serverhealthcarepanel/utils/code"
 )
 
 // @Summary Create role
@@ -16,23 +17,28 @@ import (
 // @Tags Role
 // @Param role_id path int true "role_id"
 // @Param payload body dto.CreateRole true "YES"、
-// @Success 200 {object} dto.Struct
-// @Failure 400 {object} dto.Struct "wrong request parameter"
+// @Success 200 {object} common.Response
+// @Failure 400 {object} common.Response "wrong request parameter"
 // @Router /role [post]
-func CreateRole(ctx echo.Context) error {
+func CreateRole(ctx *gin.Context) {
+	g := common.Gin{C: ctx}
+
 	newRole := new(dto.CreateRole)
 
 	if err := ctx.Bind(&newRole); err != nil {
-		return dto.Error(ctx, http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err.Error())
+		g.Error(http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err.Error())
+		return
 	}
 
-	if err := ctx.Validate(*newRole); err != nil {
-		return dto.Error(ctx, http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err.Error())
+	if err := common.CheckBindStructParameter(*newRole); err != nil {
+		g.Error(http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err.Error())
+		return
 	}
 
 	if err := role.CreateRole(newRole); err != nil {
-		return dto.Error(ctx, http.StatusOK, code.ErrorFailedAddNewRole, code.GetMsg(code.ErrorFailedAddNewRole), err.Error())
+		g.Error(http.StatusOK, code.ErrorFailedAddNewRole, code.GetMsg(code.ErrorFailedAddNewRole), err.Error())
+		return
 	}
 
-	return dto.Success(ctx, nil)
+	g.Success(nil)
 }

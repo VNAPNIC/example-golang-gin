@@ -1,10 +1,10 @@
 package userService
 
 import (
+	"healthcare-panel/dto"
+	model "healthcare-panel/models"
+	"healthcare-panel/utils"
 	"log"
-	"serverhealthcarepanel/dto"
-	"serverhealthcarepanel/models"
-	"serverhealthcarepanel/utils"
 	"strings"
 	"time"
 )

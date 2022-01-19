@@ -3,8 +3,8 @@ package model
 import (
 	"database/sql"
 	"fmt"
-	"serverhealthcarepanel/utils"
-	"serverhealthcarepanel/utils/setting"
+	"healthcare-panel/utils"
+	"healthcare-panel/utils/setting"
 	"time"
 
 	"gorm.io/driver/mysql"

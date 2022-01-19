@@ -1,4 +1,14 @@
 definitions:
+  common.Response:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+      time:
+        type: string
+    type: object
   dto.AddUser:
     properties:
       password:
@@ -49,21 +59,6 @@ definitions:
       role_name:
         type: string
     type: object
-  dto.JSONTime:
-    properties:
-      time.Time:
-        type: string
-    type: object
-  dto.Struct:
-    properties:
-      code:
-        type: integer
-      data: {}
-      message:
-        type: string
-      time:
-        $ref: '#/definitions/dto.JSONTime'
-    type: object
 info:
   contact: {}
   title: Healthcare panel
@@ -87,17 +82,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.Struct'
+            $ref: '#/definitions/common.Response'
         "400":
           description: wrong request parameter
           schema:
-            $ref: '#/definitions/dto.Struct'
+            $ref: '#/definitions/common.Response'
         "401":
           description: The corresponding username or password is incorrect
           schema:
-            $ref: '#/definitions/dto.Struct'
-      security:
-      - ApiKeyAuth: []
+            $ref: '#/definitions/common.Response'
       summary: User Login
       tags:
       - Auth
@@ -124,11 +117,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.Struct'
+            $ref: '#/definitions/common.Response'
         "400":
           description: wrong request parameter
           schema:
-            $ref: '#/definitions/dto.Struct'
+            $ref: '#/definitions/common.Response'
       security:
       - ApiKeyAuth: []
       summary: Create role
@@ -152,15 +145,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.Struct'
+            $ref: '#/definitions/common.Response'
         "400":
           description: wrong request parameter
           schema:
-            $ref: '#/definitions/dto.Struct'
+            $ref: '#/definitions/common.Response'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.Struct'
+            $ref: '#/definitions/common.Response'
       security:
       - ApiKeyAuth: []
       summary: create user
@@ -184,7 +177,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.Struct'
+            $ref: '#/definitions/common.Response'
       security:
       - ApiKeyAuth: []
       summary: Change password
@@ -201,7 +194,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.Struct'
+            $ref: '#/definitions/common.Response'
       security:
       - ApiKeyAuth: []
       summary: User Logout

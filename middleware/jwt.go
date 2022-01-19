@@ -1,78 +1,76 @@
 package middleware
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
-	"github.com/labstack/echo/v4"
+	"healthcare-panel/common"
+	"healthcare-panel/utils/code"
+	"healthcare-panel/utils/jwt"
+	redisUtil "healthcare-panel/utils/redis"
 	"net/http"
-	"serverhealthcarepanel/dto"
-	"serverhealthcarepanel/utils/code"
-	"serverhealthcarepanel/utils/jwt"
-	redisUtil "serverhealthcarepanel/utils/redis"
 	"strings"
 )
 
-func JWTHandler() echo.MiddlewareFunc {
-	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(ctx echo.Context) error {
-			var rCode int
-			var data interface{}
+func JWTHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		g := common.Gin{C: c}
 
-			rCode = code.SUCCESS
+		var rCode int
+		var data interface{}
 
-			var token = ctx.QueryParam("token")
-			var authorization = ctx.Request().Header.Get("Authorization")
+		rCode = code.SUCCESS
 
-			if authorization != "" {
-				parts := strings.SplitN(authorization, " ", 2)
-				if len(parts) == 2 && parts[0] == "Bearer" {
-					token = parts[1]
-				}
+		var token = g.C.Query("token")
+		var authorization = g.C.GetHeader("Authorization")
+		if authorization != "" {
+			parts := strings.SplitN(authorization, " ", 2)
+			if len(parts) == 2 && parts[0] == "Bearer" {
+				token = parts[1]
 			}
-
-			var claims *jwtUtil.Claims
-			var err error
-
-			if token == "" {
-				rCode = code.TokenInvalid
-			} else {
-				claims, err = jwtUtil.ParseToken(token)
-				if err != nil {
-					switch err.(*jwt.ValidationError).Errors {
-					case jwt.ValidationErrorExpired:
-						rCode = code.ErrorAuthCheckTokenTimeout
-					default:
-						rCode = code.ErrorAuthCheckTokenFail
-					}
-				}
-			}
-
-			// check token on the redis
-			if rCode != code.SUCCESS && rCode != code.TokenInvalid && claims != nil {
-				_, _ = redisUtil.Delete(claims.Issuer)
-			} else if claims != nil {
-				isExist, err := redisUtil.Exists(claims.Issuer)
-				if err != nil {
-					rCode = code.ErrorAuthCheckTokenTimeout
-					data = err.Error()
-				}
-				if isExist == false {
-					rCode = code.ErrorAuthCheckTokenTimeout
-					data = redisUtil.Error{Msg: "Token on the redis is not found!"}
-				}
-			}
-
-			if rCode != code.SUCCESS {
-				return dto.Error(ctx,
-					http.StatusUnauthorized,
-					rCode,
-					code.GetMsg(rCode),
-					data,
-				)
-			} else {
-				// Store login user information
-				ctx.Set("claims", claims)
-			}
-			return next(ctx)
 		}
+
+		var claims *jwtUtil.Claims
+		var err error
+
+		if token == "" {
+			rCode = code.TokenInvalid
+		} else {
+			claims, err = jwtUtil.ParseToken(token)
+			if err != nil {
+				switch err.(*jwt.ValidationError).Errors {
+				case jwt.ValidationErrorExpired:
+					rCode = code.ErrorAuthCheckTokenTimeout
+				default:
+					rCode = code.ErrorAuthCheckTokenFail
+				}
+			}
+		}
+
+		// check token on the redis
+		if rCode != code.SUCCESS && rCode != code.TokenInvalid && claims != nil {
+			_, _ = redisUtil.Delete(claims.Issuer)
+		} else if claims != nil {
+			isExist, err := redisUtil.Exists(claims.Issuer)
+			if err != nil {
+				rCode = code.ErrorAuthCheckTokenTimeout
+				data = err.Error()
+			}
+			if isExist == false {
+				rCode = code.ErrorAuthCheckTokenTimeout
+				data = redisUtil.Error{Msg: "Token on the redis is not found!"}
+			}
+		}
+
+		if rCode != code.SUCCESS {
+			g.Error(http.StatusUnauthorized,
+				rCode,
+				code.GetMsg(rCode),
+				data)
+			g.C.Abort()
+		} else {
+			// Store login user information
+			g.C.Set("claims", claims)
+		}
+		g.C.Next()
 	}
 }

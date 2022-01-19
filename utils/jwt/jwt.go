@@ -2,13 +2,12 @@ package jwtUtil
 
 import (
 	"fmt"
-	"log"
-	redisUtil "serverhealthcarepanel/utils/redis"
-	"serverhealthcarepanel/utils/setting"
-	"time"
-
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
-	"github.com/labstack/echo/v4"
+	redisUtil "healthcare-panel/utils/redis"
+	"healthcare-panel/utils/setting"
+	"log"
+	"time"
 )
 
 var jwtSecret = []byte(setting.AppSetting.JwtSecret)
@@ -85,8 +84,8 @@ func ParseToken(token string) (*Claims, error) {
 	return nil, err
 }
 
-func GetClaim(ctx echo.Context) Claims {
-	claims := ctx.Get("claims")
+func GetClaim(ctx *gin.Context) (Claims, bool) {
+	claims, exists := ctx.Get("claims")
 	user := claims.(*Claims)
-	return *user
+	return *user, exists
 }

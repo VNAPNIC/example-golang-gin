@@ -1,26 +1,29 @@
 package routers
 
 import (
+	"github.com/gin-gonic/gin"
+	authHandler "healthcare-panel/handlers/auth"
+	userHandler "healthcare-panel/handlers/user"
+	"healthcare-panel/middleware"
 	"net/http"
-	"serverhealthcarepanel/handlers/auth"
-	"serverhealthcarepanel/handlers/user"
-	"serverhealthcarepanel/middleware"
-
-	"github.com/labstack/echo/v4"
 )
 
-func InitUserRouter(Router *echo.Group) {
+func InitUserRouter(Router *gin.RouterGroup) {
 	Router.POST("/login", authHandler.UserLogin)
 	Router.POST("/register", userHandler.CreateUser)
 
-	groupUser := Router.Group("/user", middleware.JWTHandler())
-	groupUser.GET("", getUsers)
-	groupUser.PUT("/logout", authHandler.UserLogout)
-	groupUser.PUT("/change-password", authHandler.ChangePassword)
+	groupUser := Router.Group("/user").Use(
+		middleware.JWTHandler(),
+	)
+	{
+		groupUser.GET("", getUsers)
+		groupUser.PUT("/logout", authHandler.UserLogout)
+		groupUser.PUT("/change-password", authHandler.ChangePassword)
+	}
 }
 
 var users = []string{"Joe", "Veer", "Zion"}
 
-func getUsers(c echo.Context) error {
-	return c.JSON(http.StatusOK, users)
+func getUsers(c *gin.Context) {
+	c.JSON(http.StatusOK, users)
 }

@@ -1,9 +1,17 @@
 package routers
 
-import "github.com/labstack/echo/v4"
+import (
+	"github.com/gin-gonic/gin"
+)
 
-func InitRouter(e *echo.Echo) {
-	v1 := e.Group("/v1/api")
-	InitRoleRouter(v1)
-	InitUserRouter(v1)
+func InitRouter(g *gin.Engine) *gin.Engine {
+	v1 := g.Group("/v1/api")
+	{
+		InitRoleRouter(v1)
+		InitUserRouter(v1)
+	}
+
+	InitSwaggerRouter(g)
+
+	return g
 }

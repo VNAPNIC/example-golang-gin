@@ -1,37 +1,42 @@
 package authHandler
 
 import (
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
+	"healthcare-panel/common"
+	"healthcare-panel/dto"
+	model "healthcare-panel/models"
+	userService "healthcare-panel/services/user"
+	"healthcare-panel/utils"
+	"healthcare-panel/utils/code"
+	jwtUtil "healthcare-panel/utils/jwt"
+	redisUtil "healthcare-panel/utils/redis"
 	"net/http"
-	"serverhealthcarepanel/dto"
-	"serverhealthcarepanel/models"
-	"serverhealthcarepanel/services/user"
-	"serverhealthcarepanel/utils"
-	"serverhealthcarepanel/utils/code"
-	"serverhealthcarepanel/utils/jwt"
-	"serverhealthcarepanel/utils/redis"
 )
 
+// UserLogin
 // @Summary User Login
 // @Description User Login
 // @Accept json
 // @Produce json
-// @Security ApiKeyAuth
 // @Tags Auth
 // @Param payload body dto.Auth true "user login"
-// @Success 200 {object} dto.Struct
-// @Failure 400 {object} dto.Struct "wrong request parameter"
-// @Failure 401 {object} dto.Struct "The corresponding username or password is incorrect"
+// @Success 200 {object} common.Response
+// @Failure 400 {object} common.Response "wrong request parameter"
+// @Failure 401 {object} common.Response "The corresponding username or password is incorrect"
 // @Router /login [post]
-func UserLogin(ctx echo.Context) error {
+func UserLogin(ctx *gin.Context) {
+	g := common.Gin{C: ctx}
+
 	auth := new(dto.Auth)
 
-	if err := ctx.Bind(&auth); err != nil {
-		return dto.Error(ctx, http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err.Error())
+	if err := g.C.Bind(&auth); err != nil {
+		g.Error(http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err.Error())
+		return
 	}
 
-	if err := ctx.Validate(*auth); err != nil {
-		return dto.Error(ctx, http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err.Error())
+	if err := common.CheckBindStructParameter(*auth); err != nil {
+		g.Error(http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err.Error())
+		return
 	}
 
 	RError, isExist, user := userService.CheckAuth(auth)
@@ -52,13 +57,13 @@ func UserLogin(ctx echo.Context) error {
 		} else {
 			// set login time
 			userService.SetLoggedTime(user.ID)
-			return dto.Success(ctx, map[string]string{"token": token})
+			g.Success(map[string]string{"token": token})
+			return
 		}
 
 	}
 
-	return dto.Error(
-		ctx,
+	g.Error(
 		http.StatusOK,
 		RCode,
 		code.GetMsg(RCode),
@@ -72,21 +77,25 @@ func UserLogin(ctx echo.Context) error {
 // @Produce json
 // @Security ApiKeyAuth
 // @Tags User
-// @Success 200 {object} dto.Struct
+// @Success 200 {object} common.Response
 // @Router /user/logout [put]
-func UserLogout(ctx echo.Context) error {
-	user := jwtUtil.GetClaim(ctx)
+func UserLogout(ctx *gin.Context) {
+	g := common.Gin{C: ctx}
+
+	user, _ := jwtUtil.GetClaim(g.C)
 
 	successful, err := redisUtil.Delete(user.Issuer)
 	if err != nil {
-		return dto.Error(ctx, http.StatusOK, code.UnknownError, code.GetMsg(code.UnknownError), err.Error())
+		g.Error(http.StatusOK, code.UnknownError, code.GetMsg(code.UnknownError), err.Error())
+		return
 	}
 
 	if successful == false {
-		return dto.Error(ctx, http.StatusOK, code.UnknownError, code.GetMsg(code.UnknownError), nil)
+		g.Error(http.StatusOK, code.UnknownError, code.GetMsg(code.UnknownError), nil)
+		return
 	}
 
-	return dto.Success(ctx, nil)
+	g.Success(nil)
 }
 
 // @Summary Change password
@@ -96,29 +105,35 @@ func UserLogout(ctx echo.Context) error {
 // @Security ApiKeyAuth
 // @Tags User
 // @Param payload body dto.ChangePassword true "user change password"
-// @Success 200 {object} dto.Struct
+// @Success 200 {object} common.Response
 // @Router /user/change_password [put]
-func ChangePassword(ctx echo.Context) error {
+func ChangePassword(ctx *gin.Context) {
+	g := common.Gin{C: ctx}
+
 	password := new(dto.ChangePassword)
 
 	if err := ctx.Bind(&password); err != nil {
-		return dto.Error(ctx, http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err.Error())
+		g.Error(http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err.Error())
+		return
 	}
 
-	if err := ctx.Validate(*password); err != nil {
-		return dto.Error(ctx, http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err.Error())
+	if err := common.CheckBindStructParameter(*password); err != nil {
+		g.Error(http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err.Error())
+		return
 	}
 
-	user := jwtUtil.GetClaim(ctx)
+	user, _ := jwtUtil.GetClaim(g.C)
 
 	_, isExist, auth := model.CheckAuth(user.Username, password.OldPassword)
 	if !isExist {
-		return dto.Error(ctx, http.StatusOK, code.ErrorUserOldPasswordInvalid, code.GetMsg(code.ErrorUserOldPasswordInvalid), nil)
+		g.Error(http.StatusOK, code.ErrorUserOldPasswordInvalid, code.GetMsg(code.ErrorUserOldPasswordInvalid), nil)
+		return
 	}
 
 	if successful, _ := userService.ChangePassword(auth.ID, password.NewPassword); !successful {
-		return dto.Error(ctx, http.StatusOK, code.UnknownError, code.GetMsg(code.UnknownError), nil)
+		g.Error(http.StatusOK, code.UnknownError, code.GetMsg(code.UnknownError), nil)
+		return
 	}
 
-	return dto.Success(ctx, nil)
+	g.Success(nil)
 }

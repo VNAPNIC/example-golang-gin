@@ -1,7 +1,7 @@
 package model
 
 import (
-	"serverhealthcarepanel/utils"
+	"healthcare-panel/utils"
 	"time"
 
 	_ "gorm.io/gorm"

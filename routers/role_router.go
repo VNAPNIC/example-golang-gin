@@ -1,13 +1,16 @@
 package routers
 
 import (
-	"serverhealthcarepanel/handlers/role"
-	"serverhealthcarepanel/middleware"
-
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
+	roleHandler "healthcare-panel/handlers/role"
+	"healthcare-panel/middleware"
 )
 
-func InitRoleRouter(Router *echo.Group) {
-	role := Router.Group("/role", middleware.JWTHandler())
-	role.POST("", roleHandler.CreateRole)
+func InitRoleRouter(Router *gin.RouterGroup) {
+	role := Router.Group("/role").Use(
+		middleware.JWTHandler(),
+	)
+	{
+		role.POST("", roleHandler.CreateRole)
+	}
 }

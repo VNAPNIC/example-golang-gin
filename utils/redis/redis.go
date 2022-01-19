@@ -1,8 +1,8 @@
 package redisUtil
 
 import (
+	"healthcare-panel/utils/setting"
 	"log"
-	"serverhealthcarepanel/utils/setting"
 	"time"
 
 	"github.com/go-redis/redis/v8"

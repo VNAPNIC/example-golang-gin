@@ -1,11 +1,12 @@
 package userHandler
 
 import (
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
+	"healthcare-panel/common"
+	"healthcare-panel/dto"
+	userService "healthcare-panel/services/user"
+	"healthcare-panel/utils/code"
 	"net/http"
-	"serverhealthcarepanel/dto"
-	"serverhealthcarepanel/services/user"
-	"serverhealthcarepanel/utils/code"
 )
 
 // @Summary create user
@@ -15,24 +16,29 @@ import (
 // @Security ApiKeyAuth
 // @Tags User
 // @Param payload body dto.AddUser true "create new user"
-// @Success 200 {object} dto.Struct
-// @Failure 400 {object} dto.Struct "wrong request parameter"
-// @Failure 500 {object} dto.Struct
+// @Success 200 {object} common.Response
+// @Failure 400 {object} common.Response "wrong request parameter"
+// @Failure 500 {object} common.Response
 // @Router /user [post]
-func CreateUser(ctx echo.Context) error {
+func CreateUser(ctx *gin.Context) {
+	g := common.Gin{C: ctx}
+
 	newUser := new(dto.AddUser)
 
 	if err := ctx.Bind(&newUser); err != nil {
-		return dto.Error(ctx, http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err.Error())
+		g.Error(http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err.Error())
+		return
 	}
 
-	if err := ctx.Validate(*newUser); err != nil {
-		return dto.Error(ctx, http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err.Error())
+	if err := common.CheckBindStructParameter(*newUser); err != nil {
+		g.Error(http.StatusBadRequest, code.InvalidParams, code.GetMsg(code.InvalidParams), err.Error())
+		return
 	}
 
 	if err := userService.CreateUser(newUser); err != nil {
-		return dto.Error(ctx, http.StatusOK, code.ErrorFailedAddNewUser, code.GetMsg(code.ErrorFailedAddNewUser), err.Error())
+		g.Error(http.StatusOK, code.ErrorFailedAddNewUser, code.GetMsg(code.ErrorFailedAddNewUser), err.Error())
+		return
 	}
 
-	return dto.Success(ctx, nil)
+	g.Success(nil)
 }
